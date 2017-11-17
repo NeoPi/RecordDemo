@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:hint="长按item操作"
+        android:gravity="center"
+        />
 
     <com.neopi.recorddemo.adapter.ImpContextMenuRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-
     </com.neopi.recorddemo.adapter.ImpContextMenuRecyclerView>
 
-</RelativeLayout>
+</LinearLayout>

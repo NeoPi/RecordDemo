@@ -50,7 +50,7 @@ public class TTSActivity extends AppCompatActivity {
                     public void onNext(BaseResult baseResult) {
                         btn.setEnabled(true);
                         Log.e("111",baseResult.toString()) ;
-                        if (baseResult.code == 0 && baseResult.data instanceof Map) {
+                        if (baseResult.code == 0 && baseResult.data instanceof String) {
                             String data = (String) baseResult.data;
                             if (!TextUtils.isEmpty(data)) {
                                 AudioFileUtils.playMedia(TTSActivity.this,data);
