@@ -1,6 +1,8 @@
 package com.neopi.recorddemo.activity;
 
 import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,7 +26,9 @@ import java.io.File;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DefaultObserver;
+import io.reactivex.observers.ResourceObserver;
 
 public class RecorderListActivity extends AppCompatActivity {
 
@@ -32,6 +36,10 @@ public class RecorderListActivity extends AppCompatActivity {
     private ImpContextMenuRecyclerView recyclerView ;
     private RecorderAdapter adapter ;
     private RxPermissions rxPermissions ;
+
+    private CompositeDisposable disposable ;
+
+    private ProgressDialog dialog ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +55,10 @@ public class RecorderListActivity extends AppCompatActivity {
         recyclerView.setOnCreateContextMenuListener(this);
         rxPermissions = new RxPermissions(this) ;
         readFileList();
+
+        disposable = new CompositeDisposable() ;
+        dialog = new ProgressDialog(this) ;
+        dialog.setMessage("转换中,请稍等");
     }
 
     private void readFileList() {
@@ -89,7 +101,7 @@ public class RecorderListActivity extends AppCompatActivity {
         if (file == null) {
             return ;
         }
-        AudioFileUtils.playMedia(this,file);
+        AudioFileUtils.playMedia(getApplicationContext(),file);
     }
 
     private void toAsrTest(int position) {
@@ -98,24 +110,46 @@ public class RecorderListActivity extends AppCompatActivity {
             return ;
         }
 
+        ResourceObserver<BaseResult> asrObserver = new ResourceObserver<BaseResult>() {
+            @Override
+            public void onNext(BaseResult baseResult) {
+                Log.e("111","asr:" +baseResult.toString()) ;
+                dialog.dismiss();
+                Intent intent = new Intent(RecorderListActivity.this,TextActivity.class) ;
+                if (baseResult.code == 0) {
+                    intent.putExtra("extra",(String) baseResult.data);
+                } else {
+                    intent.putExtra("extra", baseResult.info);
+                }
+                startActivity(intent);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        } ;
+        dialog.show();
         DeviceApi.upload(file)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DefaultObserver<BaseResult>() {
-                    @Override
-                    public void onNext(BaseResult baseResult) {
-                        Log.e("111","asr:" +baseResult.toString()) ;
-                    }
+                .subscribe(asrObserver);
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
+        disposable.add(asrObserver) ;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (disposable != null) {
+            disposable.clear();
+            disposable.dispose();
+        }
+    }
 }
