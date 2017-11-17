@@ -1,4 +1,4 @@
-package com.neopi.recorddemo;
+package com.neopi.recorddemo.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.neopi.recorddemo.R;
+import com.neopi.recorddemo.audio.AudioFileUtils;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -63,7 +66,14 @@ public class RecorderAdapter extends RecyclerView.Adapter<RecorderAdapter.Record
         return mDatas.size();
     }
 
-    public static class RecorderViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
+    public File getItem(int position) {
+        if (mDatas.size() == 0 || mDatas.size() <= position || position < 0) {
+            return null;
+        }
+        return mDatas.get(position);
+    }
+
+    public static class RecorderViewHolder extends RecyclerView.ViewHolder {
 
         TextView title ;
         TextView desc ; // 230K   1017/11/16
@@ -74,9 +84,9 @@ public class RecorderAdapter extends RecyclerView.Adapter<RecorderAdapter.Record
 
             title = itemView.findViewById(R.id.item_title );
             desc = itemView.findViewById(R.id.item_desc) ;
-
+            itemView.setLongClickable(true);
             sdf = new SimpleDateFormat("yyyy年MM月dd HH:mm:ss");
-            itemView.setOnCreateContextMenuListener(this);
+//            itemView.setOnCreateContextMenuListener(this);
         }
 
         public void bindData(File file) {
@@ -86,11 +96,5 @@ public class RecorderAdapter extends RecyclerView.Adapter<RecorderAdapter.Record
             }
         }
 
-
-        @Override
-        public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.add(0,R.id.translate_to_word,0,"转换成文字");
-            menu.add(0,R.id.play,0,"播放");
-        }
     }
 }

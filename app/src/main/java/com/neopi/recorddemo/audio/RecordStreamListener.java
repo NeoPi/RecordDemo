@@ -1,4 +1,4 @@
-package com.neopi.recorddemo;
+package com.neopi.recorddemo.audio;
 
 /**
  * Author    :  NeoPi

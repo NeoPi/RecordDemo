@@ -1,9 +1,13 @@
-package com.neopi.recorddemo;
+package com.neopi.recorddemo.audio;
 
+import android.content.Context;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Environment;
 import android.text.TextUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,21 +20,21 @@ import java.util.List;
 
 public class AudioFileUtils {
 
-    private  static String rootPath="audiorecord";
+    private static String rootPath = "audiorecord";
     //原始文件(不能播放)
-    private final static String AUDIO_PCM_BASEPATH = "/"+rootPath+"/pcm/";
+    private final static String AUDIO_PCM_BASEPATH = "/" + rootPath + "/pcm/";
     //可播放的高质量音频文件
-    private final static String AUDIO_WAV_BASEPATH = "/"+rootPath+"/wav/";
+    private final static String AUDIO_WAV_BASEPATH = "/" + rootPath + "/wav/";
 
-    private static void setRootPath(String rootPath){
+    private static void setRootPath(String rootPath) {
         AudioFileUtils.rootPath = rootPath;
     }
 
-    public static String getPcmFileAbsolutePath(String fileName){
-        if(TextUtils.isEmpty(fileName)){
+    public static String getPcmFileAbsolutePath(String fileName) {
+        if (TextUtils.isEmpty(fileName)) {
             throw new NullPointerException("fileName isEmpty");
         }
-        if(!isSdcardExit()){
+        if (!isSdcardExit()) {
             throw new IllegalStateException("sd card no found");
         }
         String mAudioRawPath = "";
@@ -51,10 +55,10 @@ public class AudioFileUtils {
     }
 
     public static String getWavFileAbsolutePath(String fileName) {
-        if(fileName==null){
+        if (fileName == null) {
             throw new NullPointerException("fileName can't be null");
         }
-        if(!isSdcardExit()){
+        if (!isSdcardExit()) {
             throw new IllegalStateException("sd card no found");
         }
 
@@ -76,6 +80,7 @@ public class AudioFileUtils {
 
     /**
      * 判断是否有外部存储设备sdcard
+     *
      * @return true | false
      */
     public static boolean isSdcardExit() {
@@ -87,6 +92,7 @@ public class AudioFileUtils {
 
     /**
      * 获取全部pcm文件列表
+     *
      * @return
      */
     public static List<File> getPcmFiles() {
@@ -107,6 +113,7 @@ public class AudioFileUtils {
 
     /**
      * 获取全部wav文件列表
+     *
      * @return
      */
     public static List<File> getWavFiles() {
@@ -125,19 +132,56 @@ public class AudioFileUtils {
     }
 
 
-    public static String getSize (long size) {
+    public static String getSize(long size) {
 
-        String label ;
+        String label;
 
         DecimalFormat df = new DecimalFormat("#.00");
         if (size < 1024) {
-            label = size+"B";
+            label = size + "B";
         } else if (size >= 1024 && size < 1024 * 1024) {
-            label = df.format(size * 1f / 1024) +"K" ;
+            label = df.format(size * 1f / 1024) + "K";
         } else {
-            label = df.format(size * 1f / 1024 / 1024) +"M" ;
+            label = df.format(size * 1f / 1024 / 1024) + "M";
         }
 
-        return label ;
+        return label;
     }
+
+    private static MediaPlayer mediaPlayer;
+
+    public static void playMedia(Context context, File file) {
+        if (file == null || !file.isFile()) {
+            return;
+        }
+        String absolutePath = file.getAbsolutePath();
+        playMedia(context, absolutePath);
+    }
+
+    public static void playMedia(Context context, String url) {
+        try {
+            if (mediaPlayer != null) {
+                if (mediaPlayer.isPlaying()) {
+                    return;
+                }
+                mediaPlayer.reset();
+            }
+
+            Uri mediaUri = Uri.parse(url);
+            mediaPlayer = MediaPlayer.create(context, mediaUri);
+            mediaPlayer.start();
+
+
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.prepare();
+            mediaPlayer.start();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

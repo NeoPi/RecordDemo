@@ -1,4 +1,4 @@
-package com.neopi.recorddemo;
+package com.neopi.recorddemo.activity;
 
 import android.Manifest;
 import android.content.Intent;
@@ -10,6 +10,8 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.neopi.recorddemo.R;
+import com.neopi.recorddemo.audio.AudioRecorder;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.text.SimpleDateFormat;
@@ -89,8 +91,16 @@ public class AudioActivity extends AppCompatActivity {
             case R.id.wav_lis :
                 toCheckList();
                 break;
+            case  R.id.tts:
+                toTTS();
+                break ;
         }
         return true ;
+    }
+
+    private void toTTS() {
+        Intent intent = new Intent(this,TTSActivity.class) ;
+        startActivity(intent);
     }
 
     private void toCheckList() {

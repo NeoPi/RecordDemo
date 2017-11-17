@@ -1,4 +1,4 @@
-package com.neopi.recorddemo;
+package com.neopi.recorddemo.audio;
 
 /**
  * Author    :  NeoPi
@@ -7,6 +7,8 @@ package com.neopi.recorddemo;
  */
 
 import android.util.Log;
+
+import com.neopi.recorddemo.audio.WaveHeader;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

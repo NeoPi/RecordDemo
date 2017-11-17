@@ -1,26 +1,35 @@
-package com.neopi.recorddemo;
+package com.neopi.recorddemo.activity;
 
 import android.Manifest;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
+import com.neopi.recorddemo.R;
+import com.neopi.recorddemo.adapter.ImpContextMenuRecyclerView;
+import com.neopi.recorddemo.adapter.RecorderAdapter;
+import com.neopi.recorddemo.api.BaseResult;
+import com.neopi.recorddemo.api.DeviceApi;
+import com.neopi.recorddemo.audio.AudioFileUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import java.io.File;
 import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.observers.DefaultObserver;
 
 public class RecorderListActivity extends AppCompatActivity {
 
 
-    private RecyclerView recyclerView ;
+    private ImpContextMenuRecyclerView recyclerView ;
     private RecorderAdapter adapter ;
     private RxPermissions rxPermissions ;
 
@@ -56,21 +65,57 @@ public class RecorderListActivity extends AppCompatActivity {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.add(0,R.id.translate_to_word,0,"转换成文字");
+        menu.add(0,R.id.play,0,"播放");
     }
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
 
+        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.translate_to_word:
-                Toast.makeText(this,"开发中",Toast.LENGTH_SHORT).show();
+                toAsrTest(menuInfo.position);
                 break;
             case R.id.play:
-
+                playFile(menuInfo.position);
                 break;
         }
         return super.onContextItemSelected(item);
+    }
+
+    private void playFile(int position) {
+        File file = adapter.getItem(position);
+        if (file == null) {
+            return ;
+        }
+        AudioFileUtils.playMedia(this,file);
+    }
+
+    private void toAsrTest(int position) {
+        File file = adapter.getItem(position);
+        if (file == null) {
+            return ;
+        }
+
+        DeviceApi.upload(file)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DefaultObserver<BaseResult>() {
+                    @Override
+                    public void onNext(BaseResult baseResult) {
+                        Log.e("111","asr:" +baseResult.toString()) ;
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
 }
