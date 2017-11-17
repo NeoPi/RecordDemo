@@ -4,6 +4,7 @@ import android.os.Environment;
 import android.text.TextUtils;
 
 import java.io.File;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,5 +122,22 @@ public class AudioFileUtils {
             }
         }
         return list;
+    }
+
+
+    public static String getSize (long size) {
+
+        String label ;
+
+        DecimalFormat df = new DecimalFormat("#.00");
+        if (size < 1024) {
+            label = size+"B";
+        } else if (size >= 1024 && size < 1024 * 1024) {
+            label = df.format(size * 1f / 1024) +"K" ;
+        } else {
+            label = df.format(size * 1f / 1024 / 1024) +"M" ;
+        }
+
+        return label ;
     }
 }

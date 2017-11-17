@@ -3,4 +3,9 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <id name="translate_to_word"></id>
+    <id name="translate_to_audio"></id>
+    <id name="play"></id>
+
 </resources>

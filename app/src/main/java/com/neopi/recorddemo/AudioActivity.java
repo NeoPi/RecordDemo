@@ -1,19 +1,21 @@
 package com.neopi.recorddemo;
 
 import android.Manifest;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.AndroidException;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
-import android.view.View;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.Toast;
 
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.observers.DefaultObserver;
 
 public class AudioActivity extends AppCompatActivity {
 
@@ -24,6 +26,7 @@ public class AudioActivity extends AppCompatActivity {
     private Button btnStart ;
     private Button btnStop ;
     private RxPermissions rxPermissions ;
+    private SimpleDateFormat sdf ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +39,7 @@ public class AudioActivity extends AppCompatActivity {
         btnStart.setEnabled(true);
         btnStop.setEnabled(false);
 
+        sdf = new SimpleDateFormat("yyyy_MM_dd_HH_mm");
         rxPermissions = new RxPermissions(this) ;
         audioRecorder = AudioRecorder.getInstance() ;
         btnStart.setOnClickListener(view -> rxPermissions.request(Manifest.permission.RECORD_AUDIO,
@@ -47,7 +51,7 @@ public class AudioActivity extends AppCompatActivity {
                         status = AudioRecorder.Status.STATUS_START;
                         btnStart.setEnabled(false);
                         btnStop.setEnabled(true);
-                        String fileName = "temp";
+                        String fileName = sdf.format(new Date(System.currentTimeMillis()));
                         audioRecorder.createDefaultAudio(fileName);
                         audioRecorder.startRecord((data, begin, end) -> Log.e("111",begin+"......."+end));
                     } else {
@@ -67,7 +71,30 @@ public class AudioActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        return super.onCreateOptionsMenu(menu);
+
+        getMenuInflater().inflate(R.menu.home_more_menu,menu);
+        return true;
     }
 
+    @Override
+    public void onContextMenuClosed(Menu menu) {
+        super.onContextMenuClosed(menu);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.wav_lis :
+                toCheckList();
+                break;
+        }
+        return true ;
+    }
+
+    private void toCheckList() {
+        Intent intent = new Intent(this,RecorderListActivity.class) ;
+        startActivity(intent);
+    }
 }

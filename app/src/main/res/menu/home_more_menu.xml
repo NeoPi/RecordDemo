@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/wav_lis"
+        android:actionLayout="@layout/activity_audio"
+        android:title="查看录音文件列表">
+
+    </item>
+</menu>
