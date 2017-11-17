@@ -26,7 +26,7 @@ public class DeviceApi {
         Map<String, String> params = new TreeMap<>();
         params.put("text",text);
         params.put("language","zh");
-        return baseApi.get(HOST+path,params)
+        return baseApi.post(HOST+path,params)
                 .compose(getComposer())
                 .map(new mFunction(new TypeToken<BaseResult>() {
                 }, false));
