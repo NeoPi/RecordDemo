@@ -27,7 +27,9 @@
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.RecorderListActivity" />
         <activity android:name=".activity.TTSActivity" />
-        <activity android:name=".activity.TextActivity"></activity>
+        <activity android:name=".activity.TextActivity" />
+        <activity android:name=".activity.StreamTransActivity" />
+        <activity android:name=".activity.TranslateActivity"/>
     </application>
 
 </manifest>

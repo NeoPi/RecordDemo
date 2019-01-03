@@ -6,6 +6,7 @@ package com.neopi.recorddemo.audio;
  * Describe  :
  */
 
+import android.media.AudioFormat;
 import android.util.Log;
 
 import com.neopi.recorddemo.audio.WaveHeader;
@@ -54,7 +55,7 @@ public class PcmToWav {
         // 头部字段的大小(不包括前面4字节的标识符RIFF以及fileLength本身的4字节)
         header.fileLength = TOTAL_SIZE + (44 - 8);
         header.FmtHdrLeth = 16;
-        header.BitsPerSample = 16;
+        header.BitsPerSample = AudioFormat.CHANNEL_IN_MONO;
         header.Channels = 2;
         header.FormatTag = 0x0001;
         header.SamplesPerSec = 8000;
@@ -104,7 +105,8 @@ public class PcmToWav {
             Log.e("PcmToWav", ioe.getMessage());
             return false;
         }
-        clearFiles(filePathList);
+        // 刪除PCM文件
+//        clearFiles(filePathList);
         Log.i("PcmToWav", "mergePCMFilesToWAVFile  success!" + new SimpleDateFormat("yyyy-MM-dd hh:mm").format(new Date()));
         return true;
     }
@@ -131,7 +133,7 @@ public class PcmToWav {
         header.fileLength = TOTAL_SIZE + (44 - 8);
         header.FmtHdrLeth = 16;
         header.BitsPerSample = 16;
-        header.Channels = 2;
+        header.Channels = AudioFormat.CHANNEL_IN_MONO;
         header.FormatTag = 0x0001;
         header.SamplesPerSec = 8000;
         header.BlockAlign = (short) (header.Channels * header.BitsPerSample / 8);
