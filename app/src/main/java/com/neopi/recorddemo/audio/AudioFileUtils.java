@@ -20,9 +20,9 @@ import java.util.List;
 
 public class AudioFileUtils {
 
-    private static String rootPath = "audiorecord";
+    private static String rootPath = "bananaTech";
     //原始文件(不能播放)
-    private final static String AUDIO_PCM_BASEPATH = "/" + rootPath + "/pcm/";
+    private final static String AUDIO_PCM_BASEPATH = "/" + rootPath +"/aimoyu/pcm/";
     //可播放的高质量音频文件
     private final static String AUDIO_WAV_BASEPATH = "/" + rootPath + "/wav/";
 

@@ -4,6 +4,54 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
 
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="blackTwo">#111111</color>
+    <color name="black10">#19000000</color>
+    <color name="black40">#66000000</color>
+    <color name="black48">#7a000000</color>
+    <color name="black64">#a3000000</color>
+    <color name="black80">#cc000000</color>
+    <color name="white_80_transparent">#CCFFFFFF</color>
+    <color name="white_75_transparent">#C0FFFFFF</color>
+    <color name="white_64_transparent">#A3FFFFFF</color>
+    <color name="white_50_transparent">#80FFFFFF</color>
+    <color name="white_40_transparent">#60FFFFFF</color>
+    <color name="white_30_transparent">#40FFFFFF</color>
+    <color name="white_24_transparent">#3DFFFFFF</color>
+    <color name="white_10_transparent">#1affffff</color>
+    <color name="white_00_transparent">#00ffffff</color>
+
+
+
+    <color name="dark48">#7a2a344b</color>
+    <color name="dark80">#cc12122d</color>
+    <color name="darkTwo48">#7a2a354b</color>
+    <color name="darkTwo80">#cc12122C</color>
+    <color name="appGreen">#7ed321</color>
+    <color name="darkGreyBlue80">#cc36365c</color>
+    <color name="darkGreyBlue">#36365c</color>
+    <color name="pumpkinOrange">#fe7418</color>
+    <color name="darkSkyBlueTwo">#4A90E2</color>
+    <color name="coolGrey12">#11989DA7</color>
+    <color name="coolGrey24">#3d989DA7</color>
+    <color name="sunYellow">#FFCD2B</color>
+    <color name="sunYellowThree">#ccffcc32</color>
+    <drawable name="sunYellowThree">#ccffcc32</drawable>
+    <color name="greyishBrown">#4A4A4A</color>
+    <color name="brightOrange">#FF6600</color>
+    <color name="statusGreen">#39AA00</color>
+    <color name="statusYellow">#FFCC33</color>
+    <color name="brownishGrey">#5C5C5C</color>
+    <color name="warmGreyTwo">#9b9b9b</color>
+    <color name="warmGreyThree">#858585</color>
+    <color name="disableGrey">#FFCBCBCB</color>
+    <color name="scalarTwo">#d0021b</color>
+    <color name="watermelon">#f74b60</color>
+    <color name="recyclerview_diver">#ececec</color>
+    <color name="pinkishGreyTwo">#c6c6c6</color>
+    <color name="charcoalGrey">#3e3e54</color>
+
     <id name="translate_to_word"></id>
     <id name="translate_to_audio"></id>
     <id name="play"></id>

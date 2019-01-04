@@ -4,6 +4,67 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.TranslateActivity">
+    >
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="@color/charcoalGrey"
+        android:id="@+id/historyTitle"
+        >
+
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/historyMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/ic_menu_black_24dp"
+            android:layout_marginLeft="19dp"
+            android:layout_marginStart="19dp" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/historyLanguage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="中文 -> 英语"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="center"
+            />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/historyList"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/historyRecord"
+        app:layout_constraintTop_toBottomOf="@id/historyTitle"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintVertical_weight="1">
+
+
+    </android.support.v7.widget.RecyclerView>
+
+    <Button
+        android:id="@+id/historyRecord"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@color/charcoalGrey"
+        android:text="长按录音"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    app:cardCornerRadius="4dp"
+    app:cardElevation="1dp"
+    android:elevation="1dp"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@color/white"
+        >
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/itemLanguage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="中->En"
+            android:textSize="12sp"
+            android:textColor="@color/warmGreyTwo" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/itemFrom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_toStartOf="@id/itemLanguage"
+            android:layout_toLeftOf="@id/itemLanguage"
+            android:gravity="center_vertical|start"
+            android:textColor="@color/brownishGrey"
+            android:textSize="18sp"
+            tools:text="@string/app_name" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/itemTo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/itemFrom"
+            android:gravity="center_vertical|start"
+            android:textColor="@color/charcoalGrey"
+            android:textSize="24sp"
+            android:layout_marginTop="10dp"
+            tools:text="@string/app_name" />
+    </RelativeLayout>
+
+
+</android.support.v7.widget.CardView>
