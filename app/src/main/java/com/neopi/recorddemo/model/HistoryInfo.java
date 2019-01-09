@@ -12,6 +12,8 @@ public class HistoryInfo {
     @SerializedName("to_text") @Expose
     public String toText = "";
 
+    public boolean offline = false ;
+
 
     @Override
     public String toString() {
@@ -19,6 +21,7 @@ public class HistoryInfo {
                 "url='" + url + '\'' +
                 ", fromText='" + fromText + '\'' +
                 ", toText='" + toText + '\'' +
+                ", offline='" + offline + '\'' +
                 '}';
     }
 }

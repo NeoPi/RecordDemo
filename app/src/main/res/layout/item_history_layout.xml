@@ -7,14 +7,14 @@
     android:layout_margin="10dp"
     app:cardCornerRadius="4dp"
     app:cardElevation="1dp"
-    android:elevation="1dp"
-    >
+    android:elevation="1dp" >
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:background="@color/white"
+        android:id="@+id/itemContainer"
         >
 
         <android.support.v7.widget.AppCompatTextView

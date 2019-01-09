@@ -19,6 +19,10 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven {
+            url System.getenv("USERPROFILE") + "/.m2/repository"
+        }
+
     }
 }
 

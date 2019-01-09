@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -17,23 +18,34 @@ import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.neopi.recorddemo.Constants;
 import com.neopi.recorddemo.R;
 import com.neopi.recorddemo.adapter.HistoryAdapter;
+import com.neopi.recorddemo.adapter.MenuAdapter;
 import com.neopi.recorddemo.api.BaseResult;
 import com.neopi.recorddemo.api.DeviceApi;
 import com.neopi.recorddemo.audio.AudioFileUtils;
 import com.neopi.recorddemo.audio.AudioRecorder;
+import com.neopi.recorddemo.model.EventModel;
 import com.neopi.recorddemo.model.HistoryInfo;
+import com.neopi.recorddemo.model.MenuInfo;
+import com.neopi.recorddemo.utils.OfflineManager;
 import com.tbruyelle.rxpermissions2.RxPermissions;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.ResourceObserver;
 
 public class TranslateActivity extends AppCompatActivity {
@@ -45,12 +57,15 @@ public class TranslateActivity extends AppCompatActivity {
     private Button mRecordView = null;
     private AppCompatTextView tvLanguage = null ;
     private Drawable swapDrawable ;
+    private ListPopupWindow popupWindow ;
 
     private ArrayList<HistoryInfo> mDatas = new ArrayList<HistoryInfo>() ;
 
     private AudioRecorder audioRecorder ;
     private RxPermissions rxPermissions ;
     private AudioRecorder.Status status ;
+
+    private boolean modelOffline = true ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +74,28 @@ public class TranslateActivity extends AppCompatActivity {
 
         audioRecorder = AudioRecorder.getInstance() ;
         initView();
+
+        requestPermission() ;
+    }
+
+    private void requestPermission() {
+        Disposable permission = rxPermissions.request(Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(granted -> {
+                    if (granted) {
+
+                    } else {
+                        finish();
+                    }
+                });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
     }
 
     private void initView() {
@@ -79,21 +116,32 @@ public class TranslateActivity extends AppCompatActivity {
 
             }
         });
+
         mRecordView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                Log.e("111",event.getAction()+"  :touch") ;
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        startRecord();
                         mRecordView.setText("松手即可翻译");
                         mRecordView.setBackgroundColor(ContextCompat.getColor(TranslateActivity.this,R.color.colorPrimary));
+                        if (modelOffline) {
+                            OfflineManager.getInstance(TranslateActivity.this).startRecognizer();
+                        } else {
+                            startRecord();
+                        }
                         break;
+                    case  MotionEvent.ACTION_CANCEL:
                     case MotionEvent.ACTION_UP:
                         mRecordView.setText("长按录音");
                         mRecordView.setBackgroundColor(ContextCompat.getColor(TranslateActivity.this,R.color.charcoalGrey));
-                        status = AudioRecorder.Status.STATUS_STOP;
-                        audioRecorder.stopRecord();
-                        startTranslate();
+                        if (modelOffline) {
+                            OfflineManager.getInstance(TranslateActivity.this).stopRecognizer();
+                        } else {
+                            status = AudioRecorder.Status.STATUS_STOP;
+                            audioRecorder.stopRecord();
+                            startTranslate();
+                        }
                         break;
                 }
                 return true;
@@ -110,6 +158,46 @@ public class TranslateActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.in_from_left,R.anim.out_to_right);
             }
         });
+
+        View mMenuView = findViewById(R.id.historyMore);
+        mMenuView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showMoreMenu (v) ;
+            }
+        });
+
+        popupWindow = new ListPopupWindow(this);
+        popupWindow.setModal(true);
+        popupWindow.setWidth(540);
+        popupWindow.setHeight(-2);
+        MenuAdapter menuAdapter = new MenuAdapter(this) ;
+        popupWindow.setAdapter(menuAdapter);
+        menuAdapter.addMenu(new MenuInfo("离线翻译模式",true));
+        menuAdapter.addMenu(new MenuInfo("在线翻译模式",false));
+        popupWindow.setAnchorView(mMenuView);
+
+        popupWindow.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                MenuInfo item = menuAdapter.getItem(position);
+                if (item.isSelect) {
+                    return;
+                }
+                menuAdapter.selectItem(position);
+                popupWindow.dismiss();
+                modelOffline = position == 0 ;
+            }
+        });
+
+    }
+
+    /**
+     * 显示更多菜单选项
+     *
+     */
+    private void showMoreMenu(View view) {
+        popupWindow.show();
     }
 
     private void initLanguageVie() {
@@ -158,6 +246,7 @@ public class TranslateActivity extends AppCompatActivity {
                         if (baseResult.code == 0 && baseResult.data instanceof HistoryInfo) {
                             HistoryInfo data = (HistoryInfo) baseResult.data;
                             mAdapter.appendData(data);
+                            mHistoryList.scrollToPosition(mAdapter.getItemCount() - 1);
                             Log.e("111",data.toString()) ;
                             AudioFileUtils.playMedia(TranslateActivity.this,data.url);
                         } else {
@@ -180,5 +269,17 @@ public class TranslateActivity extends AppCompatActivity {
                 });
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onOfflineEvent (EventModel.OffLineMessageEvent event) {
+        if (event != null && event.info != null) {
+            mAdapter.appendData(event.info);
+            mHistoryList.scrollToPosition(mAdapter.getItemCount() - 1);
+        }
+    }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
 }
