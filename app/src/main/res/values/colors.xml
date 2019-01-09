@@ -53,6 +53,7 @@
     <color name="charcoalGrey">#3e3e54</color>
 
     <id name="translate_to_word"></id>
+    <id name="asr"></id>
     <id name="translate_to_audio"></id>
     <id name="play"></id>
 

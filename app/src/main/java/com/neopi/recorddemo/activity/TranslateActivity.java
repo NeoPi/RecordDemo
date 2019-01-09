@@ -1,8 +1,9 @@
 package com.neopi.recorddemo.activity;
 
 import android.Manifest;
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.neopi.recorddemo.Constants;
 import com.neopi.recorddemo.R;
 import com.neopi.recorddemo.adapter.HistoryAdapter;
 import com.neopi.recorddemo.api.BaseResult;
@@ -97,6 +99,17 @@ public class TranslateActivity extends AppCompatActivity {
                 return true;
             }
         });
+
+        findViewById(R.id.historyMenu).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(TranslateActivity.this,RecorderListActivity.class) ;
+                intent.putExtra(Constants.EXTRA_FILE_DIR,Environment.getExternalStorageDirectory()+"/com.actions.voicebletest/pcm/");
+//                intent.putExtra(Constants.EXTRA_FILE_DIR,Environment.getExternalStorageDirectory()+"/audiorecord/pcm/");
+                startActivity(intent);
+                overridePendingTransition(R.anim.in_from_left,R.anim.out_to_right);
+            }
+        });
     }
 
     private void initLanguageVie() {
@@ -128,11 +141,18 @@ public class TranslateActivity extends AppCompatActivity {
                 });
     }
 
+    long startTime ;
     private void startTranslate() {
         File file = new File(AudioFileUtils.getPcmFileAbsolutePath("output.pcm")) ;
         DeviceApi.uploadFile(file)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ResourceObserver<BaseResult>() {
+                    @Override
+                    protected void onStart() {
+                        super.onStart();
+                        startTime = System.currentTimeMillis() ;
+                    }
+
                     @Override
                     public void onNext(BaseResult baseResult) {
                         if (baseResult.code == 0 && baseResult.data instanceof HistoryInfo) {
@@ -154,7 +174,8 @@ public class TranslateActivity extends AppCompatActivity {
 
                     @Override
                     public void onComplete() {
-
+                        long l = System.currentTimeMillis();
+                        Log.e("111","start - end:" + (l-startTime) ) ;
                     }
                 });
     }

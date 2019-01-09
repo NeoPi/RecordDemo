@@ -127,7 +127,7 @@ public class AudioRecorder {
     public void stopRecord() {
         Log.d("AudioRecorder","===stopRecord===");
         if (status == Status.STATUS_NO_READY || status == Status.STATUS_READY) {
-            throw new IllegalStateException("录音尚未开始");
+//            throw new IllegalStateException("录音尚未开始");
         } else {
             audioRecord.stop();
             status = Status.STATUS_STOP;

@@ -1,12 +1,17 @@
 package com.neopi.recorddemo.audio;
 
 import android.content.Context;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioTrack;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Environment;
 import android.text.TextUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -22,7 +27,7 @@ public class AudioFileUtils {
 
     private static String rootPath = "bananaTech";
     //原始文件(不能播放)
-    private final static String AUDIO_PCM_BASEPATH = "/" + rootPath +"/aimoyu/pcm/";
+    private final static String AUDIO_PCM_BASEPATH = "/" + rootPath + "/aimoyu/pcm/";
     //可播放的高质量音频文件
     private final static String AUDIO_WAV_BASEPATH = "/" + rootPath + "/wav/";
 
@@ -167,12 +172,14 @@ public class AudioFileUtils {
                 mediaPlayer.reset();
             }
 
-            Uri mediaUri = Uri.parse(url);
-            mediaPlayer = MediaPlayer.create(context, mediaUri);
-            mediaPlayer.start();
+//            Uri mediaUri = Uri.parse(url);
+//            mediaPlayer = MediaPlayer.create(context, mediaUri);
+//
+//            mediaPlayer.start();
 
 
             mediaPlayer = new MediaPlayer();
+            mediaPlayer.setDataSource(url);
             mediaPlayer.prepare();
             mediaPlayer.start();
         } catch (IllegalArgumentException e) {
@@ -182,6 +189,54 @@ public class AudioFileUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+
+    private static AudioTrack trackPlayer;
+
+    public static void playPcm(Context context, File file) {
+        if (file == null || !file.isFile()) {
+            return;
+        }
+
+        try {
+            if (trackPlayer != null) {
+//                trackPlayer.stop();
+//                trackPlayer.release();
+            }
+            //1.查询硬件所能分配的最小缓冲区
+            int bufsize = AudioTrack.getMinBufferSize(16000,
+                    AudioFormat.CHANNEL_OUT_MONO,
+                    AudioFormat.ENCODING_PCM_16BIT);
+            //2.创建音轨
+            trackPlayer = new AudioTrack(AudioManager.STREAM_MUSIC, 16000,
+                    AudioFormat.CHANNEL_OUT_MONO,
+                    AudioFormat.ENCODING_PCM_16BIT,
+                    bufsize,
+                    AudioTrack.MODE_STREAM);
+
+
+            //3.播放PCM流
+            trackPlayer.play();
+            FileInputStream inputStream = new FileInputStream(file);
+            byte[] buf = new byte[bufsize * 2] ;
+            int offset = 0 ;
+            while (true) {
+                int read = inputStream.read(buf, 0, buf.length);
+                if (read == -1)
+                    break ;
+                offset += buf.length ;
+                trackPlayer.write(buf,offset,buf.length);
+            }
+
+            trackPlayer.stop();
+            trackPlayer.release();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 }

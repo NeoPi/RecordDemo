@@ -32,7 +32,8 @@ public class ApiManager {
 
     static BaseApi baseApi;
     static Gson gson = new Gson();
-    final static String HOST = "http://hardware.t.samjoy.com/";
+//    final static String HOST = "http://hardware.t.samjoy.com/";
+    final static String HOST = "http://hardware.xiangjiaochuxing.com/";
 
     static {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
